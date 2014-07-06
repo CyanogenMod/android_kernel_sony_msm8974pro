@@ -434,9 +434,9 @@ static int bcm4339_write_proc_proto(struct file *file, const char *buffer,
 		return -EFAULT;
 	}
 
-	if (proto == '1')
+	if (proto == '0')
 		bcm_bt_lpm_exit_lpm();
-	else if (proto == '2')
+	else if (proto == '1')
 		bcm_bt_lpm_reset_timer();
 	else
 		BT_DBG("Bluetooth write proc invalid write data %c\n", proto);
