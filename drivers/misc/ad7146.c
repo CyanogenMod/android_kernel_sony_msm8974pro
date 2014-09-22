@@ -2089,7 +2089,7 @@ static int vreg_turn_off(struct ad7146_chip *ad7146)
 static int ad7146_probe(struct i2c_client *client,
 		const struct i2c_device_id *id)
 {
-	struct device *dev;
+	struct device *dev = NULL;
 	struct ad7146_chip *ad7146 = NULL;
 	int irq;
 	int error;
