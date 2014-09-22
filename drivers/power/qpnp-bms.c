@@ -1994,7 +1994,7 @@ static int charging_adjustments(struct qpnp_bms_chip *chip,
 					chip->system_load_count);
 		}
 		return soc;
-	} else if (ibat_ua > 0) {
+	} else if (ibat_ua > 0 || !is_batfet_closed(chip)) {
 		pr_debug("NOT CHARGING SOC %d\n", soc);
 		chip->system_load_count = 0;
 		chip->prev_chg_soc = soc;
