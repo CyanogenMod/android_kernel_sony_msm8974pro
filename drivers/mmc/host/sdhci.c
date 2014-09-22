@@ -2,7 +2,6 @@
  *  linux/drivers/mmc/host/sdhci.c - Secure Digital Host Controller Interface driver
  *
  *  Copyright (C) 2005-2008 Pierre Ossman, All Rights Reserved.
- *  Copyright (C) 2013 Sony Mobile Communications AB.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +28,6 @@
 #include <linux/mmc/mmc.h>
 #include <linux/mmc/host.h>
 #include <linux/mmc/card.h>
-#include <linux/mmc/cd-gpio.h>
 
 #include "sdhci.h"
 
@@ -1849,17 +1847,6 @@ static void sdhci_hw_reset(struct mmc_host *mmc)
 		host->ops->hw_reset(host);
 }
 
-static int sdhci_get_cd(struct mmc_host *mmc)
-{
-	struct sdhci_host *host = mmc_priv(mmc);
-	int ret;
-
-	sdhci_runtime_pm_get(host);
-	ret = mmc_cd_get_status(mmc);
-	sdhci_runtime_pm_put(host);
-	return ret;
-}
-
 static int sdhci_get_ro(struct mmc_host *mmc)
 {
 	struct sdhci_host *host = mmc_priv(mmc);
@@ -2327,7 +2314,6 @@ static const struct mmc_host_ops sdhci_ops = {
 	.request	= sdhci_request,
 	.set_ios	= sdhci_set_ios,
 	.get_ro		= sdhci_get_ro,
-	.get_cd		= sdhci_get_cd,
 	.hw_reset	= sdhci_hw_reset,
 	.enable_sdio_irq = sdhci_enable_sdio_irq,
 	.start_signal_voltage_switch	= sdhci_start_signal_voltage_switch,
@@ -3300,7 +3286,7 @@ int sdhci_add_host(struct sdhci_host *host)
 
 	/* SDR104 supports also implies SDR50 support */
 	if (caps[1] & SDHCI_SUPPORT_SDR104)
-		mmc->caps |= MMC_CAP_UHS_SDR50;
+		mmc->caps |= MMC_CAP_UHS_SDR104 | MMC_CAP_UHS_SDR50;
 	else if (caps[1] & SDHCI_SUPPORT_SDR50)
 		mmc->caps |= MMC_CAP_UHS_SDR50;
 
