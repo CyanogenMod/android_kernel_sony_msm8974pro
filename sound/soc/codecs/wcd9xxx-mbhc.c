@@ -58,7 +58,7 @@
 #define FAKE_INS_LOW 10
 #define FAKE_INS_HIGH 80
 #define FAKE_INS_HIGH_NO_SWCH 150
-#define FAKE_REMOVAL_MIN_PERIOD_MS 50
+#define FAKE_REMOVAL_MIN_PERIOD_MS 200
 #define FAKE_INS_DELTA_SCALED_MV 300
 
 #define BUTTON_MIN 0x8000
@@ -3535,6 +3535,12 @@ irqreturn_t wcd9xxx_dce_handler(int irq, void *data)
 
 	if (!mbhc->polling_active) {
 		pr_warn("%s: mbhc polling is not active, skip button press\n",
+			__func__);
+		goto done;
+	}
+
+	if (mbhc->current_plug == PLUG_TYPE_ANC_HEADPHONE) {
+		pr_warn("%s: 5-pole plug inserted, skip button press\n",
 			__func__);
 		goto done;
 	}
